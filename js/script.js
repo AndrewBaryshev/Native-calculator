@@ -1,4 +1,4 @@
-var resultArea = true;
+var resultArea = false;
 var inputAreaEmpty = true;
 
 function analyzer(strExpression) {
@@ -97,7 +97,6 @@ function getResult() {
          readElem += inputArea.innerHTML[i];
       }
    }
-   inputArea.innerHTML = "";
    if (analyzer(readElem)) {
       let digitsOperators = [];
       let digit = "";
@@ -115,9 +114,25 @@ function getResult() {
       digitsOperators.push(digit);
       console.log(digitsOperators);
       calcResult = computFirst(digitsOperators);
-      inputAreaEmpty = true;
+      inputAreaEmpty = false;
       resultArea = true;
-      outputArea.innerHTML = "=" + String(calcResult);
+      if (String(calcResult).length > 15) {
+         outputArea.style.fontSize = "24px";
+      }
+      else if (String(calcResult).length > 9) {
+         outputArea.style.fontSize = "32px";
+      }
+      else {
+         outputArea.style.fontSize = "50px";
+      }
+      outputArea.innerHTML = "=" + String(Number(Number.parseFloat(calcResult).toFixed(8)));
+   }
+   else {
+      inputArea.innerHTML = "";
+      outputArea.innerHTML = "";
+      inputAreaEmpty = true;
+      resultArea = false;
+      throw new Error(`${readElem} isn't correct expression`);
    }
 }
 
@@ -150,9 +165,19 @@ function update(sym) {
          readElem += inputArea.innerHTML[i];
       }
    }
+   if (resultArea) {
+      readElem = "";
+   }
    readElem += sym;
+   if (readElem.length > 80) {
+      inputArea.style.fontSize = "24px";
+   }
+   else {
+      inputArea.style.fontSize = "32px";
+   }
    inputArea.innerHTML = readElem;
    inputAreaEmpty = false;
+   resultArea = false;
 }
 
 function updateOperator(sym) {
@@ -172,10 +197,22 @@ function updateOperator(sym) {
          resultStr += readElem[i];
       }
       resultStr += sym;
+      if (resultStr.length > 80) {
+         inputArea.style.fontSize = "24px";
+      }
+      else {
+         inputArea.style.fontSize = "32px";
+      }
       inputArea.innerHTML = resultStr;
    }
    else {
       readElem += sym;
+      if (readElem.length > 80) {
+         inputArea.style.fontSize = "24px";
+      }
+      else {
+         inputArea.style.fontSize = "32px";
+      }
       inputArea.innerHTML = readElem;
    }
 }
@@ -263,7 +300,7 @@ buttonDelete.onclick = function () {
 
 let buttonPoint = document.getElementById("point");
 buttonPoint.onclick = function () {
-   if (resultArea && inputAreaEmpty) {
+   if (resultArea && !inputAreaEmpty) {
       moveResult(".");
    }
    else if (!inputAreaEmpty) {
@@ -272,7 +309,7 @@ buttonPoint.onclick = function () {
 }
 let buttonPlus = document.getElementById("plus");
 buttonPlus.onclick = function () {
-   if (resultArea && inputAreaEmpty) {
+   if (resultArea && !inputAreaEmpty) {
       moveResult("+");
    }
    else if (!inputAreaEmpty) {
@@ -281,16 +318,14 @@ buttonPlus.onclick = function () {
 }
 let buttonMinus = document.getElementById("minus");
 buttonMinus.onclick = function () {
-   if (resultArea && inputAreaEmpty) {
+   if (resultArea && !inputAreaEmpty) {
       moveResult("-");
    }
-   else if (!inputAreaEmpty) {
-      updateOperator("-");
-   }
+   updateOperator("-");
 }
 let buttonMultiply = document.getElementById("multiply");
 buttonMultiply.onclick = function () {
-   if (resultArea && inputAreaEmpty) {
+   if (resultArea && !inputAreaEmpty) {
       moveResult("x");
    }
    else if (!inputAreaEmpty) {
@@ -299,7 +334,7 @@ buttonMultiply.onclick = function () {
 }
 let buttonDivision = document.getElementById("division");
 buttonDivision.onclick = function () {
-   if (resultArea && inputAreaEmpty) {
+   if (resultArea && !inputAreaEmpty) {
       moveResult("/");
    }
    else if (!inputAreaEmpty) {
@@ -308,7 +343,7 @@ buttonDivision.onclick = function () {
 }
 let buttonPercent = document.getElementById("percent");
 buttonPercent.onclick = function () {
-   if (resultArea && inputAreaEmpty) {
+   if (resultArea && !inputAreaEmpty) {
       moveResult("%");
    }
    else if (!inputAreaEmpty) {
