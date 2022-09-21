@@ -128,10 +128,6 @@ function getResult() {
       outputArea.innerHTML = "=" + String(Number(Number.parseFloat(calcResult).toFixed(8)));
    }
    else {
-      inputArea.innerHTML = "";
-      outputArea.innerHTML = "";
-      inputAreaEmpty = true;
-      resultArea = false;
       throw new Error(`${readElem} isn't correct expression`);
    }
 }
@@ -248,45 +244,186 @@ function deleteSym() {
    }
 }
 
+function findOperator() {
+   let inputArea = document.getElementById("input-area");
+   let readElem = "";
+   let testReg = /[0-9]|\+|\-|x|\/|\%|\./;
+   for (let i = 0; i < inputArea.innerHTML.length; i++) {
+      if (testReg.test(inputArea.innerHTML[i])) {
+         readElem += inputArea.innerHTML[i];
+      }
+   }
+   let testOperator = /\+|\-|\%|\/|\x/;
+   let counter = 0;
+   for (let i = 0; i < readElem.length; i++) {
+      if (testOperator.test(readElem[i])) {
+         counter += 1;
+      }
+   }
+   return counter;
+}
+
+function analyzeLastDigit() {
+   let inputArea = document.getElementById("input-area");
+   let readElem = "";
+   let testReg = /[0-9]|\+|\-|x|\/|\%|\./;
+   for (let i = 0; i < inputArea.innerHTML.length; i++) {
+      if (testReg.test(inputArea.innerHTML[i])) {
+         readElem += inputArea.innerHTML[i];
+      }
+   }
+   if (readElem.length === 0) {
+      return true;
+   }
+   let lastDigit = "";
+   let counter = findOperator();
+   let testOperator = /\+|\-|\%|\/|\x/;
+   if (counter > 0) {
+      for (let i = 0; i < readElem.length; i++) {
+         if (counter === 0) {
+            lastDigit += readElem[i];
+         }
+         else if (testOperator.test(readElem[i])) {
+            counter -= 1;
+         }
+      }
+      console.log(lastDigit);
+      if (lastDigit[0] !== "0") {
+         return true;
+      }
+      else {
+         console.log(lastDigit);
+         let flag = false;
+         for (let i = 0; i < lastDigit.length; i++) {
+            if (lastDigit[i] === ".") {
+               flag = true;
+            }
+         }
+         return flag;
+      }
+   }
+   else {
+      lastDigit = readElem;
+      if (readElem[0] !== "0") {
+         return true;
+      }
+      else {
+         console.log(lastDigit);
+         let flag = false;
+         for (let i = 0; i < readElem.length; i++) {
+            if (readElem[i] === ".") {
+               flag = true;
+            }
+         }
+         return flag;
+      }
+   }
+}
+
+function analyzeLastDigitPoint() {
+   let inputArea = document.getElementById("input-area");
+   let readElem = "";
+   let testReg = /[0-9]|\+|\-|x|\/|\%|\./;
+   for (let i = 0; i < inputArea.innerHTML.length; i++) {
+      if (testReg.test(inputArea.innerHTML[i])) {
+         readElem += inputArea.innerHTML[i];
+      }
+   }
+   if (readElem.length === 0) {
+      return true;
+   }
+   let lastDigit = "";
+   let counter = findOperator();
+   let testOperator = /\+|\-|\%|\/|\x/;
+   if (counter > 0) {
+      for (let i = 0; i < readElem.length; i++) {
+         if (counter === 0) {
+            lastDigit += readElem[i];
+         }
+         else if (testOperator.test(readElem[i])) {
+            counter -= 1;
+         }
+      }
+      console.log(lastDigit);
+      let flag = true;
+      for (let i = 0; i < lastDigit.length; i++) {
+         if (lastDigit[i] === ".") {
+            flag = false;
+         }
+      }
+      return flag;
+   }
+   else {
+      let flag = true;
+      for (let i = 0; i < readElem.length; i++) {
+         if (readElem[i] === ".") {
+            flag = false;
+         }
+      }
+      return flag;
+   }
+}
+
+
 let buttonOne = document.getElementById("1");
 buttonOne.onclick = function () {
-   update("1");
+   if (analyzeLastDigit()) {
+      update("1");
+   }
 }
 let buttonTwo = document.getElementById("2");
 buttonTwo.onclick = function () {
-   update("2");
+   if (analyzeLastDigit()) {
+      update("2");
+   }
 }
 let buttonThree = document.getElementById("3");
 buttonThree.onclick = function () {
-   update("3");
+   if (analyzeLastDigit()) {
+      update("3");
+   }
 }
 let buttonFour = document.getElementById("4");
 buttonFour.onclick = function () {
-   update("4");
+   if (analyzeLastDigit()) {
+      update("4");
+   }
 }
 let buttonFive = document.getElementById("5");
 buttonFive.onclick = function () {
-   update("5");
+   if (analyzeLastDigit()) {
+      update("5");
+   }
 }
 let buttonSix = document.getElementById("6");
 buttonSix.onclick = function () {
-   update("6");
+   if (analyzeLastDigit()) {
+      update("6");
+   }
 }
 let buttonSeven = document.getElementById("7");
 buttonSeven.onclick = function () {
-   update("7");
+   if (analyzeLastDigit()) {
+      update("7");
+   }
 }
 let buttonEight = document.getElementById("8");
 buttonEight.onclick = function () {
-   update("8");
+   if (analyzeLastDigit()) {
+      update("8");
+   }
 }
 let buttonNine = document.getElementById("9");
 buttonNine.onclick = function () {
-   update("9");
+   if (analyzeLastDigit()) {
+      update("9");
+   }
 }
 let buttonZero = document.getElementById("0");
 buttonZero.onclick = function () {
-   update("0");
+   if (analyzeLastDigit()) {
+      update("0");
+   }
 }
 
 let buttonClean = document.getElementById("clean");
@@ -300,10 +437,7 @@ buttonDelete.onclick = function () {
 
 let buttonPoint = document.getElementById("point");
 buttonPoint.onclick = function () {
-   if (resultArea && !inputAreaEmpty) {
-      moveResult(".");
-   }
-   else if (!inputAreaEmpty) {
+   if (!inputAreaEmpty && !resultArea && analyzeLastDigitPoint()) {
       updateOperator(".");
    }
 }
